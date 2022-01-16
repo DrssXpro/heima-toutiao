@@ -1,12 +1,21 @@
 <template>
   <div class="login-container">
-    <el-form ref="form" :model="user" class="user-form">
+    <el-form ref="loginform" :model="user" :rules="rules" class="user-form">
       <h2>头条后台管理系统</h2>
-      <el-form-item>
-        <el-input v-model="user.mobile" placeholder="请输入手机号"></el-input>
+      <el-form-item prop="mobile">
+        <el-input
+          v-model="user.mobile"
+          placeholder="请输入手机号"
+          class="phone"
+        >
+        </el-input>
       </el-form-item>
-      <el-form-item>
-        <el-input v-model="user.code" placeholder="请输入验证码"></el-input>
+      <el-form-item prop="code">
+        <el-input
+          v-model="user.code"
+          placeholder="请输入验证码"
+          class="code"
+        ></el-input>
       </el-form-item>
       <el-form-item>
         <el-checkbox
@@ -25,7 +34,8 @@
 </template>
 
 <script>
-import { loginRequest } from "../../service/login_request";
+import { loginRequest } from "../../service/user_request";
+import Cache from "../../utils/cache";
 export default {
   data() {
     return {
@@ -33,12 +43,45 @@ export default {
         mobile: "13911111111",
         code: "246810",
       },
-      checked: false,
-      loading: false,
+      checked: false, //协议框是否勾选
+      loading: false, //登录按钮状态
+      rules: {
+        mobile: [
+          { required: true, message: "手机号不能为空", trigger: "change" },
+          {
+            pattern: /^1[3|5|7|8|9]\d{9}$/,
+            message: "请输入正确的号码格式",
+            trigger: "change",
+          },
+        ],
+        code: [
+          { required: true, message: "验证码不能为空", trigger: "change" },
+          {
+            pattern: /^\d{6}$/,
+            message: "验证码长度为6个字符",
+            trigger: "change",
+          },
+        ],
+      },
     };
   },
   methods: {
     onLogin() {
+      //手动点击登录按钮验证输入格式
+      this.$refs["loginform"].validate((valid, err) => {
+        if (!valid) {
+          this.$message({
+            message: "登陆失败，输入的手机号或验证码格式有误!",
+            type: "warning",
+            center: true,
+          });
+          return;
+        }
+        //格式验证成功后对数据进行验证
+        this.login_message();
+      });
+    },
+    login_message() {
       // 获取表单数据以及验证
       if (!this.checked) {
         this.$message({
@@ -51,16 +94,19 @@ export default {
       this.loading = true;
       loginRequest(this.user)
         .then((res) => {
-          console.log(res);
           this.$message({
             message: "登录成功!",
             type: "success",
             center: true,
           });
+          //登录验证成功后取出token进行本地存储
+          console.log(res.data.data);
+          Cache.saveItem("token", res.data.data.token);
           this.loading = false;
+          //跳转到首页
+          this.$router.push("/");
         })
         .catch((err) => {
-          console.log(err);
           this.$message({
             message: "登录失败，手机号或验证码错误!",
             type: "warning",
