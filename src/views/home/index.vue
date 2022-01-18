@@ -9,5 +9,7 @@ export default {
 </script>
 
 <style>
-
+.home_container{
+  height:100%;
+}
 </style>

@@ -1,5 +1,24 @@
 <template>
   <div class="login-container">
+        <vue-particles
+      color="#97D0F2"
+      :particleOpacity="0.7"
+      :particlesNumber="80"
+      shapeType="circle"
+      :particleSize="4"
+      linesColor="#97D0F2"
+      :linesWidth="1"
+      :lineLinked="true"
+      :lineOpacity="0.4"
+      :linesDistance="150"
+      :moveSpeed="3"
+      :hoverEffect="true"
+      hoverMode="grab"
+      :clickEffect="true"
+      clickMode="push"
+      class="bg-position"
+    >
+    </vue-particles>
     <el-form ref="loginform" :model="user" :rules="rules" class="user-form">
       <h2>头条后台管理系统</h2>
       <el-form-item prop="mobile">
@@ -30,6 +49,7 @@
         >
       </el-form-item>
     </el-form>
+
   </div>
 </template>
 
@@ -151,6 +171,13 @@ export default {
     h2 {
       color: rgb(64, 158, 255);
     }
+  }
+  .bg-position {
+    position:absolute;
+    width: 100vw;
+    height: 100vh;
+    top: 0;
+    left:0;
   }
 }
 </style>

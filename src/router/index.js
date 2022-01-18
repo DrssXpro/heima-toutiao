@@ -1,8 +1,7 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
-import login from "../views/login";
-import home from '../views/home'
-import layout from '../views/layout'
+import Cache from "../utils/cache";
+
 Vue.use(VueRouter);
 
 const routes = [
@@ -10,24 +9,43 @@ const routes = [
   {
     path: "/login",
     name: "login",
-    component: login,
+    component: () => import("../views/login"),
   },
   {
-    path:"/",
-    component:layout,
-    children:[
+    path: "/",
+    component: () => import("../views/layout"),
+    children: [
       {
         // 默认子路由
-        path:"",
-        name:"home",
-        component:home
-      }
-    ]
-  }
+        path: "",
+        name: "home",
+        component: () => import("../views/home"),
+      },
+      {
+        path: "/article",
+        name: "article",
+        component: () => import("../views/article"),
+      },
+      {
+        path: "publish",
+        name: "publish",
+        component: () => import("../views/publish"),
+      },
+    ],
+  },
 ];
 
 const router = new VueRouter({
   routes,
 });
 
+router.beforeEach((to, from, next) => {
+  //设置路由守卫判断是否存在token，不存在则转到登陆页面
+  if (to.path !== "/login") {
+    if (!Cache.getItem("token")) {
+      next("/login");
+    }
+  }
+  next();
+});
 export default router;

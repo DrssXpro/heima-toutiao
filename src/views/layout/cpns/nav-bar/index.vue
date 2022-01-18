@@ -7,9 +7,9 @@
       @close="handleClose"
       :collapse="isCollapse"
       :collapse-transition="false"
-      background-color="#002033"
+      background-color="#304156"
       text-color="#fff"
-      active-text-color="#ffd04b"
+      active-text-color="#1884CD"
       router
     >
       <el-menu-item index="/">
@@ -73,12 +73,12 @@ export default {
 }
 .nav-head {
   overflow: hidden;
-  padding-top: 10px;
-  background-color: #002033;
+  /* padding-top: 10px; */
+  background-color: #1F2D3D;
   width: 100%;
-  height: 50px;
+  height: 60px;
   box-sizing: border-box;
-  line-height: 50px;
+  line-height: 60px;
   text-align: center;
   color: #fff;
   font-size: 20px;

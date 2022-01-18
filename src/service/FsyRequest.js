@@ -25,6 +25,9 @@ class FsyRequest {
   post(url, data, params) {
     return MyRequest.post(url, data, params);
   }
+  delete(url) {
+    return MyRequest.delete(url);
+  }
 }
 
 export default new FsyRequest();
