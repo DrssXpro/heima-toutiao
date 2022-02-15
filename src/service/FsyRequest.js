@@ -22,11 +22,16 @@ class FsyRequest {
     return MyRequest.get(url, config);
   }
 
-  post(url, data, params) {
-    return MyRequest.post(url, data, params);
+  post(url, data, config) {
+    return MyRequest.post(url, data, config);
   }
+
   delete(url) {
     return MyRequest.delete(url);
+  }
+
+  put(url, data, config) {
+    return MyRequest.put(url, data, config);
   }
 }
 

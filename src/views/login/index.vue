@@ -1,6 +1,6 @@
 <template>
   <div class="login-container">
-        <vue-particles
+    <vue-particles
       color="#97D0F2"
       :particleOpacity="0.7"
       :particlesNumber="80"
@@ -27,13 +27,12 @@
           placeholder="请输入手机号"
           class="phone"
         >
+          <i slot="prefix" class="el-icon-mobile-phone"></i>
         </el-input>
       </el-form-item>
       <el-form-item prop="code">
-        <el-input
-          v-model="user.code"
-          placeholder="请输入验证码"
-          class="code"
+        <el-input v-model="user.code" placeholder="请输入验证码" class="code"
+          ><i slot="prefix" class="el-icon-tickets"></i
         ></el-input>
       </el-form-item>
       <el-form-item>
@@ -49,7 +48,6 @@
         >
       </el-form-item>
     </el-form>
-
   </div>
 </template>
 
@@ -173,11 +171,11 @@ export default {
     }
   }
   .bg-position {
-    position:absolute;
+    position: absolute;
     width: 100vw;
     height: 100vh;
     top: 0;
-    left:0;
+    left: 0;
   }
 }
 </style>

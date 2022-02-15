@@ -14,6 +14,11 @@
 
 <script>
 export default {
+  props: {
+    getChannel: {
+      required: false,
+    },
+  },
   data() {
     return {
       channels: [],
@@ -21,14 +26,21 @@ export default {
     };
   },
   created() {
-      /**
-       * actions由于异步因此不能直接设置channels值
-       * 在actions返回一个promise保证数据获取后再设置
-       */
+    /**
+     * actions由于异步因此不能直接设置channels值
+     * 在actions返回一个promise保证数据获取后再设置
+     */
     this.$store.dispatch("getChannelsData").then((res) => {
-      console.log(res);
       this.channels = this.$store.state.channels;
     });
+  },
+
+  watch: {
+    //监听频道选择的id，将id存入store
+    channelId(newValue) {
+      console.log("手动改变频道");
+      this.$store.commit("setChannelValue", newValue);
+    },
   },
 };
 </script>

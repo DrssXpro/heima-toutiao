@@ -5,7 +5,7 @@
         <bread-crumb title="发布文章"></bread-crumb>
       </div>
       <div class="text item">
-        <el-form ref="form" :model="form" label-width="50px">
+        <el-form ref="form" :model="article" label-width="50px">
           <el-form-item label="标题:">
             <el-input v-model="article.title"></el-input>
           </el-form-item>
@@ -13,19 +13,14 @@
             <el-input type="textarea" v-model="article.content"></el-input>
           </el-form-item>
           <el-form-item label="封面:">
-            <el-radio-group v-model="form.cover">
-              <el-radio label="单图"></el-radio>
-              <el-radio label="三图"></el-radio>
-              <el-radio label="无图"></el-radio>
-              <el-radio label="自动"></el-radio>
-            </el-radio-group>
+            <my-radio :labels="labels" :items="radioItems" />
           </el-form-item>
           <el-form-item label="频道">
-            <my-channels />
+            <my-channels :getChannel="channelID" />
           </el-form-item>
 
           <el-form-item>
-            <el-button type="primary" @click="onSubmit">发表</el-button>
+            <el-button type="primary" @click="publichArticle">发表</el-button>
             <el-button>存入草稿</el-button>
           </el-form-item>
         </el-form>
@@ -37,36 +32,53 @@
 <script>
 import breadCrumb from "../../components/breadCrumb.vue";
 import myChannels from "../../components/myChannels.vue";
+import myRadio from "../../components/myRadio.vue";
+
+import {
+  articlePublishRequest,
+  getArticleContent,
+  editArticleRequest,
+} from "../../service/article_request";
 export default {
   components: {
     breadCrumb,
     myChannels,
+    myRadio,
   },
   data() {
     return {
-      form: {
-        name: "",
-        region: "",
-        date1: "",
-        date2: "",
-        delivery: false,
-        type: [],
-        resource: "",
-        desc: "",
-      },
       article: {
         title: "",
         content: "",
         cover: {
-          type: 0,
+          type: 1,
           images: [],
         },
+        
       },
+      labels: [1, 3, 0, -1],
+      radioItems: ["单图", "三图", "无图", "自动"],
+      status: 1,
+      channelID: null,
     };
   },
   methods: {
-    onSubmit() {
-      console.log("submit!");
+    publichArticle() {
+      const channel_id = this.$store.state.channelValue;
+      const Ac = this.article;
+      const data = { ...Ac, channel_id };
+      articlePublishRequest(data).then((res) => {
+        console.log(res);
+      });
+    },
+    getArticle(id) {
+      getArticleContent(id).then((res) => {
+        this.article = res.data.data;
+        this.channelID = res.data.data.channel_id;
+        console.log(res.data.data.channel_id);
+        this.$store.commit("setChannelValue",this.channelID)
+        console.log("提交了");
+      });
     },
   },
 };
