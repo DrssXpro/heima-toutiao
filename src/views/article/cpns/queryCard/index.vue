@@ -7,7 +7,11 @@
       <div class="text item">
         <el-form ref="form" label-width="50px" size="mini">
           <el-form-item label="状态:">
-            <my-radio :labels="labels" :items="radioItems" />
+            <my-radio
+              :labels="labels"
+              :items="radioItems"
+              @radioStatusChange="handleRadioChanged"
+            />
           </el-form-item>
           <el-form-item label="频道:">
             <my-channels />
@@ -63,7 +67,7 @@ export default {
   //监听时间选择组件的内容，发送到store存储
   watch: {
     dateTime(newValue) {
-      this.$store.commit("articles/setDateTime", newValue);
+      this.$store.commit("m_article/setDateTime", newValue);
     },
   },
   methods: {
@@ -75,7 +79,11 @@ export default {
           console.log(res);
           this.loading = false;
         })
-        .catch((err) => this.loading = false);
+        .catch((err) => (this.loading = false));
+    },
+    handleRadioChanged(status) {
+      console.log(status);
+      this.$store.commit("m_article/setRadioStatus",status)
     },
   },
 };

@@ -8,7 +8,11 @@
         <el-input type="textarea" v-model="article.content"></el-input>
       </el-form-item>
       <el-form-item label="封面:">
-        <my-radio :labels="labels" :items="radioItems" />
+        <my-radio
+          :labels="labels"
+          :items="radioItems"
+          @radioStatusChange="handleRadioChanged"
+        />
       </el-form-item>
       <el-form-item label="频道">
         <my-channels :getChannel="channelID" />
@@ -16,9 +20,7 @@
     </el-form>
     <div slot="footer" class="dialog-footer">
       <el-button @click="sendCancel">取 消</el-button>
-      <el-button type="primary" @click="sendReady"
-        >确 定</el-button
-      >
+      <el-button type="primary" @click="sendReady">确 定</el-button>
     </div>
   </div>
 </template>
@@ -26,10 +28,17 @@
 <script>
 import myChannels from "../../../../components/myChannels.vue";
 import myRadio from "../../../../components/myRadio.vue";
+import { editArticleRequest } from "../../../../service/article_request";
+import { mapState } from "vuex";
 export default {
   components: {
     myChannels,
     myRadio,
+  },
+  props: {
+    contentId: {
+      type: Number,
+    },
   },
   data() {
     return {
@@ -37,7 +46,7 @@ export default {
         title: "",
         content: "",
         cover: {
-          type: 1,
+          type: -1,
           images: [],
         },
       },
@@ -47,21 +56,39 @@ export default {
       channelID: null,
     };
   },
-  methods:{
-    sendCancel(){
-      this.$emit("cancelDialog")
+  computed: {
+    ...mapState("m_editArticle", ["editArticle"]),
+  },
+  watch: {
+    editArticle(newValue) {
+      this.article = newValue;
     },
-    sendReady(){
-      this.$emit("readyDialog")
-    }
-  }
+  },
+  methods: {
+    handleRadioChanged(status) {
+      console.log(status);
+    },
+    sendCancel() {
+      this.$emit("cancelDialog");
+    },
+    sendReady() {
+      editArticleRequest(this.contentId, this.article).then((res) => {
+        this.$message({
+          type: "success",
+          message: "修改成功!",
+          center: true,
+        });
+      });
+      this.$emit("readyDialog");
+    },
+  },
 };
 </script>
 
 <style lang="less">
-.dialog-footer{
+.dialog-footer {
   display: flex;
   justify-content: center;
-  align-items:center;
+  align-items: center;
 }
 </style>

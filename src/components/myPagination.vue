@@ -30,7 +30,7 @@ export default {
       this.$store.commit("m_article/setCurrentPage", currentPage);
       this.$store.dispatch("m_article/getTableArticles", currentPage).then((res) => {
         console.log(res);
-        this.$emit("getPageArticles");
+        this.$emit("getPageArticles"); 
         this.loading = false;
       });
     },

@@ -42,7 +42,7 @@
                 type="primary"
                 icon="el-icon-edit"
                 style="margin-right: 5px"
-                @click="dialogFormVisible = true"
+                @click="handleEditClick(scope.row)"
               ></el-button>
               <!-- 编辑按钮触发dialog -->
               <el-dialog
@@ -54,12 +54,13 @@
                 <update-form
                   @cancelDialog="handleCancel"
                   @readyDialog="handleReady"
+                  :contentId="scope.row.id"
                 />
               </el-dialog>
               <!-- 删除按钮触发popcofirm -->
               <el-popconfirm
                 title="确定要删除这篇文章吗？"
-                @confirm="handleDelete(scope.$index, scope.row)"
+                @confirm="handleDelete(scope.row)"
               >
                 <el-button
                   size="medium"
@@ -85,7 +86,10 @@
 <script>
 import myPagination from "../../../../components/myPagination.vue";
 import updateForm from "../updateForm/index.vue";
-import { articleDeleteRequest } from "../../../../service/article_request";
+import {
+  articleDeleteRequest,
+  getArticleContent,
+} from "../../../../service/article_request";
 import { mapState } from "vuex";
 export default {
   components: {
@@ -104,7 +108,7 @@ export default {
     return {
       articleStatus: [
         { status: 0, text: "草稿", type: "info" },
-        { status: 1, text: "待审核", type: "" },
+        { status: 1, text: "待审核", type: "info" },
         { status: 2, text: "审核通过", type: "success" },
         { status: 3, text: "审核失败", type: "warning" },
         { status: 4, text: "已删除", type: "danger" },
@@ -126,32 +130,51 @@ export default {
   },
   methods: {
     //处理删除按钮
-    handleDelete(index, row) {
+    handleDelete(row) {
       this.loading = true;
-      articleDeleteRequest(row.id).then((res) => {
-        this.$message({
-          type: "success",
-          message: "删除成功!",
-          center: true,
-        });
-        //删除过后更新页码
-        let currentPage = this.$store.state.m_article.currentPage;
-        this.$store
-          .dispatch("m_article/getTableArticles", currentPage)
-          .then((res) => {
-            this.articles = this.$store.state.m_article.Articles;
-            this.loading = false;
+      articleDeleteRequest(row.id)
+        .then((res) => {
+          this.$message({
+            type: "success",
+            message: "删除成功!",
+            center: true,
           });
-      });
+          //删除过后更新页码获取文章
+          this.getCurrentPageArticle();
+        })
+        .catch((err) => console.log(err));
     },
+    //处理编辑按钮
+    handleEditClick(data) {
+      getArticleContent(data.id).then((res) => {
+        this.$store.commit("m_editArticle/setArticle", res.data.data);
+      });
+      this.dialogFormVisible = true;
+    },
+    //点击分页器，将store中的文章获取过来修改table里的数据
     handleArticles() {
       this.articles = this.$store.state.m_article.Articles;
     },
+    //处理编辑按钮取消逻辑
     handleCancel() {
       this.dialogFormVisible = false;
     },
+    //处理编辑按钮确认逻辑
     handleReady() {
+      //编辑文章修改，重新渲染一下table数据
+      this.getCurrentPageArticle();
       this.dialogFormVisible = false;
+    },
+
+    //获取currentPage后查询数据
+    getCurrentPageArticle() {
+      let currentPage = this.$store.state.m_article.currentPage;
+      this.$store
+        .dispatch("m_article/getTableArticles", currentPage)
+        .then((res) => {
+          this.articles = this.$store.state.m_article.Articles;
+          this.loading = false;
+        });
     },
   },
 };

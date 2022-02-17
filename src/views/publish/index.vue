@@ -51,10 +51,9 @@ export default {
         title: "",
         content: "",
         cover: {
-          type: 1,
+          type: -1,
           images: [],
         },
-        
       },
       labels: [1, 3, 0, -1],
       radioItems: ["单图", "三图", "无图", "自动"],
@@ -67,19 +66,25 @@ export default {
       const channel_id = this.$store.state.channelValue;
       const Ac = this.article;
       const data = { ...Ac, channel_id };
-      articlePublishRequest(data).then((res) => {
-        console.log(res);
-      });
-    },
-    getArticle(id) {
-      getArticleContent(id).then((res) => {
-        this.article = res.data.data;
-        this.channelID = res.data.data.channel_id;
-        console.log(res.data.data.channel_id);
-        this.$store.commit("setChannelValue",this.channelID)
-        console.log("提交了");
-      });
-    },
+      console.log(data);
+      articlePublishRequest(data)
+        .then((res) => {
+          this.$message({
+            type: "success",
+            message: "发布成功!",
+            center: true,
+          });
+          console.log(res);
+        })
+        .catch((err) => {
+          this.$message({
+            type: "error",
+            message: "发布失败!",
+            center: true,
+          });
+          console.log(err);
+        });
+    }
   },
 };
 </script>

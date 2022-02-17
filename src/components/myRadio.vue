@@ -30,12 +30,11 @@ export default {
   },
   watch: {
     status(newValue) {
-      this.$store.commit("setRadioStatus", newValue);
+      this.$emit("radioStatusChange", newValue);
     },
   },
   created() {
     this.status = this.labels[0];
-    this.$store.commit("setRadioStatus", this.labels[0]);
   },
 };
 </script>
