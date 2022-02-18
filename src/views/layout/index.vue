@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-container  class="layout_container">
+    <el-container class="layout_container">
       <el-aside width="auto" class="aside">
         <nav-bar :class="nav_bar_style" :isCollapse="isCollapse" />
       </el-aside>
@@ -10,7 +10,9 @@
         </el-header>
         <el-main class="main">
           <!-- 子路由出口 -->
-          <router-view />
+          <transition name="slide-left" mode="out-in">
+            <router-view />
+          </transition>
         </el-main>
       </el-container>
     </el-container>
@@ -47,23 +49,23 @@ export default {
 </script>
 
 <style scoped lang="less">
-.layout_container{
-  position:fixed;
-  top:0;
-  left:0;
-  right:0;
-  bottom:0;
+.layout_container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
 }
 .nav-bar {
   width: 200px;
   height: 100%;
-  background-color: rgb(48,65,86);
+  background-color: rgb(48, 65, 86);
   transition: all 0.5s;
 }
 .nav-bar-change {
   width: 70px;
   height: 100%;
-  background-color: rgb(48,65,86);
+  background-color: rgb(48, 65, 86);
   transition: all 0.5s;
 }
 .nav-header {
@@ -71,5 +73,17 @@ export default {
 }
 .main {
   background-color: #fff;
+}
+.slide-left-enter {
+  opacity: 0;
+}
+.slide-left-enter-active {
+  transition: all 0.5s ease;
+}
+.slide-left-leave-to {
+  opacity: 0;
+}
+.slide-left-leave-active {
+  transition: all 0.5s ease;
 }
 </style>

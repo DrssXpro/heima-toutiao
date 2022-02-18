@@ -10,13 +10,22 @@
             <el-input v-model="article.title"></el-input>
           </el-form-item>
           <el-form-item label="内容:">
-            <el-input type="textarea" v-model="article.content"></el-input>
+            <el-tiptap
+              v-model="article.content"
+              :extensions="extensions"
+              height="350"
+              placeholder="请输入文章内容"
+            ></el-tiptap>
           </el-form-item>
           <el-form-item label="封面:">
             <my-radio :labels="labels" :items="radioItems" />
           </el-form-item>
           <el-form-item label="频道">
-            <my-channels :getChannel="channelID" />
+            <my-channels
+              :getChannel="channelID"
+              @channelChanged="handleChannelChanged"
+              :isAll="false"
+            />
           </el-form-item>
 
           <el-form-item>
@@ -33,12 +42,27 @@
 import breadCrumb from "../../components/breadCrumb.vue";
 import myChannels from "../../components/myChannels.vue";
 import myRadio from "../../components/myRadio.vue";
-
 import {
-  articlePublishRequest,
-  getArticleContent,
-  editArticleRequest,
-} from "../../service/article_request";
+  Doc,
+  Text,
+  Paragraph,
+  Heading,
+  Bold,
+  Underline,
+  Italic,
+  Strike,
+  ListItem,
+  BulletList,
+  OrderedList,
+  TodoItem,
+  TodoList,
+  HorizontalRule,
+  Fullscreen,
+  Image,
+} from "element-tiptap";
+
+import { articlePublishRequest } from "../../service/article_request";
+
 export default {
   components: {
     breadCrumb,
@@ -59,11 +83,29 @@ export default {
       radioItems: ["单图", "三图", "无图", "自动"],
       status: 1,
       channelID: null,
+      extensions: [
+        new Doc(),
+        new Text(),
+        new Paragraph(),
+        new Heading({ level: 5 }),
+        new Bold({ bubble: true }), // 在气泡菜单中渲染菜单按钮
+        new Underline({ bubble: true, menubar: false }), // 在气泡菜单而不在菜单栏中渲染菜单按钮
+        new Italic(),
+        new Strike(),
+        new Image(),
+        new HorizontalRule(),
+        new ListItem(),
+        new BulletList(),
+        new OrderedList(),
+        new TodoItem(),
+        new TodoList(),
+        new Fullscreen(),
+      ],
     };
   },
   methods: {
     publichArticle() {
-      const channel_id = this.$store.state.channelValue;
+      const channel_id = this.channelID;
       const Ac = this.article;
       const data = { ...Ac, channel_id };
       console.log(data);
@@ -84,7 +126,10 @@ export default {
           });
           console.log(err);
         });
-    }
+    },
+    handleChannelChanged(value) {
+      this.channelID = value;
+    },
   },
 };
 </script>

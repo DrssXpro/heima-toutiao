@@ -8,14 +8,10 @@ Vue.use(Vuex);
 export default new Vuex.Store({
   state: {
     channels: [], //存储频道当中的选项
-    channelValue: null, //记录频道选中的选项
   },
   mutations: {
     setChannelsData(state, res) {
       state.channels = res;
-    },
-    setChannelValue(state, res) {
-      state.channelValue = res;
     },
   },
   actions: {

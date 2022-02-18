@@ -4,8 +4,10 @@ export default {
   state: {
     Articles: [], //获取table内容
     dateTime: [],
+    Counter: 0,
     currentPage: 1,
     radioStatus: null,
+    channelStatus: null,
   },
   mutations: {
     setDateTime(state, value) {
@@ -20,21 +22,25 @@ export default {
     setRadioStatus(state, value) {
       state.radioStatus = value;
     },
+    setChannelStatus(state, value) {
+      state.channelStatus = value;
+    },
   },
   actions: {
-    getTableArticles({ state, commit, rootState }, page = 1) {
+    getTableArticles({ state, commit }, page = 1) {
       return new Promise((resolve, reject) => {
         articleTableRequest({
           page,
           per_page: 10,
           status: state.radioStatus,
-          channel_id: rootState.channelValue,
+          channel_id: state.channelStatus,
           begin_pubdate: state.dateTime ? state.dateTime[0] : null,
           end_pubdate: state.dateTime ? state.dateTime[1] : null,
         })
           .then((res) => {
             commit("getQueryTableData", res.data.data.results);
-            resolve(res.data.data.total_count);
+            state.Counter = res.data.data.total_count;
+            resolve(state.Counter);
           })
           .catch((err) => reject(err));
       });

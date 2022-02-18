@@ -69,3 +69,15 @@ axios.post(url,data,config)
 6. my-radio组件之前封装残留的问题：关于radio的选中选项之前保存到vuex里的根模块当中，而在不同组件当中使用radio会导致选项混乱从而影响查询文章内容。
 
 解决方案：将选中的选项分模块存放到vuex中，保证不同组件使用时其选项互不干扰。
+
+
+
+7. 关于发布文章功能post请求一直返回状态码507问题：因为自己独立封装了channel组件，把默认的"全部"选项放了进去，导致发布文章一直不成功。
+
+解决方案：对channel的第一个选项"全部"添加v-if判断，通过外界来决定是否显示。
+
+
+
+8. 富文本编辑器tiptap使用报错：Duplicate use of selection JSON ID cell
+
+解决方案：在项目目录下找打 node_modules/tiptap-extensions/node-modules，把最后的 node-modules 目录名字修改为 node-modules–

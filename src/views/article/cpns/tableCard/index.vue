@@ -44,20 +44,6 @@
                 style="margin-right: 5px"
                 @click="handleEditClick(scope.row)"
               ></el-button>
-              <!-- 编辑按钮触发dialog -->
-              <el-dialog
-                title="编辑文章"
-                :visible.sync="dialogFormVisible"
-                :modal-append-to-body="false"
-                center
-              >
-                <update-form
-                  @cancelDialog="handleCancel"
-                  @readyDialog="handleReady"
-                  :contentId="scope.row.id"
-                />
-              </el-dialog>
-              <!-- 删除按钮触发popcofirm -->
               <el-popconfirm
                 title="确定要删除这篇文章吗？"
                 @confirm="handleDelete(scope.row)"
@@ -79,6 +65,19 @@
           @getPageArticles="handleArticles"
         />
       </div>
+      <!-- 编辑按钮的弹窗 -->
+      <el-dialog
+        title="编辑文章"
+        :visible.sync="dialogFormVisible"
+        :modal-append-to-body="false"
+        center
+      >
+        <update-form
+          @cancelDialog="handleCancel"
+          @readyDialog="handleReady"
+          :contentId="articleId"
+        />
+      </el-dialog>
     </el-card>
   </div>
 </template>
@@ -96,6 +95,7 @@ export default {
     myPagination,
     updateForm,
   },
+  //请求table中的数据
   created() {
     this.loading = true;
     this.$store.dispatch("m_article/getTableArticles").then((res) => {
@@ -117,14 +117,16 @@ export default {
       articles: [],
       loading: false,
       dialogFormVisible: false,
+      articleId: 0,
     };
   },
   computed: {
-    ...mapState("m_article", ["Articles"]),
+    ...mapState("m_article", ["Articles","Counter"]),
   },
   //主要监听queryCard里查询的数据变化来更新tableCard的数据
   watch: {
     Articles(newValue) {
+      this.counter = this.Counter
       this.articles = newValue;
     },
   },
@@ -145,8 +147,9 @@ export default {
         .catch((err) => console.log(err));
     },
     //处理编辑按钮
-    handleEditClick(data) {
-      getArticleContent(data.id).then((res) => {
+    handleEditClick(row) {
+      this.articleId = row.id;
+      getArticleContent(row.id).then((res) => {
         this.$store.commit("m_editArticle/setArticle", res.data.data);
       });
       this.dialogFormVisible = true;
@@ -172,6 +175,7 @@ export default {
       this.$store
         .dispatch("m_article/getTableArticles", currentPage)
         .then((res) => {
+          this.counter = res;
           this.articles = this.$store.state.m_article.Articles;
           this.loading = false;
         });

@@ -56,11 +56,16 @@ export default {
       channelID: null,
     };
   },
+  //映射vuex中edit模块保存的article变量
   computed: {
     ...mapState("m_editArticle", ["editArticle"]),
   },
+  //监听article变量，如果table中的编辑按钮点击，则会修改vux里的article里的值
+  //通过监听来展示到该update组件上
   watch: {
     editArticle(newValue) {
+      console.log(newValue.channel_id);
+      this.channelID = newValue.channel_id
       this.article = newValue;
     },
   },
@@ -69,13 +74,18 @@ export default {
       console.log(status);
     },
     sendCancel() {
+      this.$message({
+        type: "success",
+        message: "您取消了编辑！",
+        center: true,
+      });
       this.$emit("cancelDialog");
     },
     sendReady() {
       editArticleRequest(this.contentId, this.article).then((res) => {
         this.$message({
           type: "success",
-          message: "修改成功!",
+          message: "修改成功！",
           center: true,
         });
       });

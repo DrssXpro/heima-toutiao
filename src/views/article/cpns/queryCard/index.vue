@@ -14,7 +14,7 @@
             />
           </el-form-item>
           <el-form-item label="频道:">
-            <my-channels />
+            <my-channels @channelChanged="handleChannelChanged" />
           </el-form-item>
           <el-form-item label="日期:">
             <el-date-picker
@@ -76,14 +76,15 @@ export default {
       this.$store
         .dispatch("m_article/getTableArticles", page)
         .then((res) => {
-          console.log(res);
           this.loading = false;
         })
         .catch((err) => (this.loading = false));
     },
     handleRadioChanged(status) {
-      console.log(status);
-      this.$store.commit("m_article/setRadioStatus",status)
+      this.$store.commit("m_article/setRadioStatus", status);
+    },
+    handleChannelChanged(status) {
+      this.$store.commit("m_article/setChannelStatus", status);
     },
   },
 };
