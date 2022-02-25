@@ -5,11 +5,16 @@
         <bread-crumb title="发布文章"></bread-crumb>
       </div>
       <div class="text item">
-        <el-form ref="form" :model="article" label-width="50px">
-          <el-form-item label="标题:">
+        <el-form
+          ref="article-form"
+          :model="article"
+          :rules="formRules"
+          label-width="60px"
+        >
+          <el-form-item label="标题:" prop="title">
             <el-input v-model="article.title"></el-input>
           </el-form-item>
-          <el-form-item label="内容:">
+          <el-form-item label="内容:" prop="content">
             <el-tiptap
               v-model="article.content"
               :extensions="extensions"
@@ -20,7 +25,7 @@
           <el-form-item label="封面:">
             <my-radio :labels="labels" :items="radioItems" />
           </el-form-item>
-          <el-form-item label="频道">
+          <el-form-item label="频道" prop="channel_id">
             <my-channels
               :getChannel="channelID"
               @channelChanged="handleChannelChanged"
@@ -42,6 +47,7 @@
 import breadCrumb from "../../components/breadCrumb.vue";
 import myChannels from "../../components/myChannels.vue";
 import myRadio from "../../components/myRadio.vue";
+import formRules from "../../utils/formRules";
 import {
   Doc,
   Text,
@@ -61,7 +67,10 @@ import {
   Image,
 } from "element-tiptap";
 
-import { articlePublishRequest } from "../../service/article_request";
+import {
+  articlePublishRequest,
+  uploadImage,
+} from "../../service/article_request";
 
 export default {
   components: {
@@ -92,7 +101,17 @@ export default {
         new Underline({ bubble: true, menubar: false }), // 在气泡菜单而不在菜单栏中渲染菜单按钮
         new Italic(),
         new Strike(),
-        new Image(),
+        new Image({
+          //自定义图片上传
+          uploadRequest(file) {
+            const fd = new FormData();
+            fd.append("image", file);
+            return uploadImage(fd).then((res) => {
+              console.log(res);
+              return res.data.data.url;
+            });
+          },
+        }),
         new HorizontalRule(),
         new ListItem(),
         new BulletList(),
@@ -101,31 +120,36 @@ export default {
         new TodoList(),
         new Fullscreen(),
       ],
+      formRules,
     };
   },
   methods: {
     publichArticle() {
-      const channel_id = this.channelID;
-      const Ac = this.article;
-      const data = { ...Ac, channel_id };
-      console.log(data);
-      articlePublishRequest(data)
-        .then((res) => {
-          this.$message({
-            type: "success",
-            message: "发布成功!",
-            center: true,
+      this.$refs["article-form"].validate((valid) => {
+        if (!valid) return;
+
+        const channel_id = this.channelID;
+        const Ac = this.article;
+        const data = { ...Ac, channel_id };
+        console.log(data);
+        articlePublishRequest(data)
+          .then((res) => {
+            this.$message({
+              type: "success",
+              message: "发布成功!",
+              center: true,
+            });
+            console.log(res);
+          })
+          .catch((err) => {
+            this.$message({
+              type: "error",
+              message: "发布失败!",
+              center: true,
+            });
+            console.log(err);
           });
-          console.log(res);
-        })
-        .catch((err) => {
-          this.$message({
-            type: "error",
-            message: "发布失败!",
-            center: true,
-          });
-          console.log(err);
-        });
+      });
     },
     handleChannelChanged(value) {
       this.channelID = value;

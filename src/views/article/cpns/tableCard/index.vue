@@ -61,8 +61,9 @@
         </el-table>
         <!-- 分页器 -->
         <my-pagination
-          :counter="counter / 10"
+          DataType="article"
           @getPageArticles="handleArticles"
+          :counter="Math.floor(counter / 10)"
         />
       </div>
       <!-- 编辑按钮的弹窗 -->
@@ -113,20 +114,20 @@ export default {
         { status: 3, text: "审核失败", type: "warning" },
         { status: 4, text: "已删除", type: "danger" },
       ],
-      counter: 0,
       articles: [],
+      counter: 0,
       loading: false,
       dialogFormVisible: false,
       articleId: 0,
     };
   },
   computed: {
-    ...mapState("m_article", ["Articles","Counter"]),
+    ...mapState("m_article", ["Articles", "ArticleCounter"]),
   },
   //主要监听queryCard里查询的数据变化来更新tableCard的数据
   watch: {
     Articles(newValue) {
-      this.counter = this.Counter
+      this.counter = this.ArticleCounter;
       this.articles = newValue;
     },
   },
@@ -135,7 +136,7 @@ export default {
     handleDelete(row) {
       this.loading = true;
       articleDeleteRequest(row.id)
-        .then((res) => {
+        .then(() => {
           this.$message({
             type: "success",
             message: "删除成功!",
@@ -157,6 +158,8 @@ export default {
     //点击分页器，将store中的文章获取过来修改table里的数据
     handleArticles() {
       this.articles = this.$store.state.m_article.Articles;
+
+      console.log(this.articles);
     },
     //处理编辑按钮取消逻辑
     handleCancel() {
@@ -171,7 +174,8 @@ export default {
 
     //获取currentPage后查询数据
     getCurrentPageArticle() {
-      let currentPage = this.$store.state.m_article.currentPage;
+      let currentPage = this.$store.state.m_article.ArticlecurrentPage;
+      console.log(currentPage);
       this.$store
         .dispatch("m_article/getTableArticles", currentPage)
         .then((res) => {

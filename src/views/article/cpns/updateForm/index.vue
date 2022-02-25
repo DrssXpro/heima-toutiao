@@ -1,11 +1,21 @@
 <template>
   <div class="updateDialog">
-    <el-form ref="form" :model="article" label-width="50px">
-      <el-form-item label="标题:">
+    <el-form
+      ref="article-form"
+      :model="article"
+      :rules="formRules"
+      label-width="60px"
+    >
+      <el-form-item label="标题:" prop="title">
         <el-input v-model="article.title"></el-input>
       </el-form-item>
-      <el-form-item label="内容:">
-        <el-input type="textarea" v-model="article.content"></el-input>
+      <el-form-item label="内容:" prop="content">
+        <el-tiptap
+          v-model="article.content"
+          :extensions="extensions"
+          height="350"
+          placeholder="请输入文章内容"
+        ></el-tiptap>
       </el-form-item>
       <el-form-item label="封面:">
         <my-radio
@@ -14,7 +24,7 @@
           @radioStatusChange="handleRadioChanged"
         />
       </el-form-item>
-      <el-form-item label="频道">
+      <el-form-item label="频道" prop="channel_id">
         <my-channels :getChannel="channelID" />
       </el-form-item>
     </el-form>
@@ -28,6 +38,25 @@
 <script>
 import myChannels from "../../../../components/myChannels.vue";
 import myRadio from "../../../../components/myRadio.vue";
+import formRules from "../../../../utils/formRules";
+import {
+  Doc,
+  Text,
+  Paragraph,
+  Heading,
+  Bold,
+  Underline,
+  Italic,
+  Strike,
+  ListItem,
+  BulletList,
+  OrderedList,
+  TodoItem,
+  TodoList,
+  HorizontalRule,
+  Fullscreen,
+  Image,
+} from "element-tiptap";
 import { editArticleRequest } from "../../../../service/article_request";
 import { mapState } from "vuex";
 export default {
@@ -54,6 +83,35 @@ export default {
       radioItems: ["单图", "三图", "无图", "自动"],
       status: 1,
       channelID: null,
+      extensions: [
+        new Doc(),
+        new Text(),
+        new Paragraph(),
+        new Heading({ level: 5 }),
+        new Bold({ bubble: true }), // 在气泡菜单中渲染菜单按钮
+        new Underline({ bubble: true, menubar: false }), // 在气泡菜单而不在菜单栏中渲染菜单按钮
+        new Italic(),
+        new Strike(),
+        new Image({
+          //自定义图片上传
+          uploadRequest(file) {
+            const fd = new FormData();
+            fd.append("image", file);
+            return uploadImage(fd).then((res) => {
+              console.log(res);
+              return res.data.data.url;
+            });
+          },
+        }),
+        new HorizontalRule(),
+        new ListItem(),
+        new BulletList(),
+        new OrderedList(),
+        new TodoItem(),
+        new TodoList(),
+        new Fullscreen(),
+      ],
+      formRules,
     };
   },
   //映射vuex中edit模块保存的article变量
@@ -65,7 +123,7 @@ export default {
   watch: {
     editArticle(newValue) {
       console.log(newValue.channel_id);
-      this.channelID = newValue.channel_id
+      this.channelID = newValue.channel_id;
       this.article = newValue;
     },
   },
@@ -82,14 +140,25 @@ export default {
       this.$emit("cancelDialog");
     },
     sendReady() {
-      editArticleRequest(this.contentId, this.article).then((res) => {
-        this.$message({
-          type: "success",
-          message: "修改成功！",
-          center: true,
-        });
+      this.$refs["article-form"].validate((valid) => {
+        if (!valid) return;
+        editArticleRequest(this.contentId, this.article)
+          .then((res) => {
+            this.$message({
+              type: "success",
+              message: "修改成功！",
+              center: true,
+            });
+          })
+          .catch((err) => {
+            this.$message({
+              type: "warning",
+              message: "修改失败",
+              center: true,
+            });
+          });
+        this.$emit("readyDialog");
       });
-      this.$emit("readyDialog");
     },
   },
 };

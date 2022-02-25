@@ -12,6 +12,7 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
 export default {
   props: {
     items: {
@@ -28,9 +29,15 @@ export default {
       status: "",
     };
   },
+  computed: {
+    ...mapState("m_article", ["radioStatus"]),
+  },
   watch: {
     status(newValue) {
       this.$emit("radioStatusChange", newValue);
+    },
+    radioStatus(newValue) {
+      this.status = newValue;
     },
   },
   created() {

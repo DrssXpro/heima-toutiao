@@ -1,11 +1,15 @@
 import { articleTableRequest } from "../service/article_request";
+import { getImages } from "../service/image_request";
 export default {
   namespaced: true,
   state: {
     Articles: [], //获取table内容
+    Images: [],
+    imageCounter: 0,
+    imageCurrentPage: 1,
+    ArticleCounter: 0,
+    ArticlecurrentPage: 1,
     dateTime: [],
-    Counter: 0,
-    currentPage: 1,
     radioStatus: null,
     channelStatus: null,
   },
@@ -16,8 +20,20 @@ export default {
     getQueryTableData(state, value) {
       state.Articles = value;
     },
-    setCurrentPage(state, value) {
-      state.currentPage = value;
+    getImageData(state, value) {
+      state.Images = value;
+    },
+    setArticleCurrentPage(state, value) {
+      state.ArticlecurrentPage = value;
+    },
+    setImageCurrentPage(state, value) {
+      state.imageCurrentPage = value;
+    },
+    setArticleCounter(state, value) {
+      state.ArticleCounter = value;
+    },
+    setImageCounter(state, value) {
+      state.imageCounter = value;
     },
     setRadioStatus(state, value) {
       state.radioStatus = value;
@@ -39,8 +55,22 @@ export default {
         })
           .then((res) => {
             commit("getQueryTableData", res.data.data.results);
-            state.Counter = res.data.data.total_count;
-            resolve(state.Counter);
+            commit("setArticleCounter", res.data.data.total_count);
+            resolve(state.ArticleCounter);
+          })
+          .catch((err) => reject(err));
+      });
+    },
+    getImages({ state, commit }, payload) {
+      return new Promise((resolve, reject) => {
+        getImages({
+          ...payload,
+          per_page: 12,
+        })
+          .then((res) => {
+            commit("getImageData", res.data.data.results);
+            commit("setImageCounter", res.data.data.total_count);
+            resolve(state.imageCounter);
           })
           .catch((err) => reject(err));
       });

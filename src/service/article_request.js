@@ -25,3 +25,8 @@ export function editArticleRequest(id, data, draft = false) {
 export function getArticleContent(id) {
   return FsyRequest.get(`/mp/v1_0/articles/${id}`);
 }
+
+//向服务器上传图片
+export function uploadImage(data) {
+  return FsyRequest.postImage(data);
+}

@@ -1,6 +1,8 @@
 <template>
   <div class="nav">
-    <div class="nav-head">头条内容管理系统</div>
+    <div class="nav-head">
+      <p>{{title}}</p>
+    </div>
     <el-menu
       default-active="/"
       @open="handleOpen"
@@ -50,6 +52,9 @@ export default {
     isCollapse: {
       type: Boolean,
     },
+    title: {
+      type: String,
+    },
   },
   data() {
     return {
@@ -73,16 +78,15 @@ export default {
 }
 .nav-head {
   overflow: hidden;
-  /* padding-top: 10px; */
-  background-color: #1F2D3D;
+  background-color: #1f2d3d;
   width: 100%;
   height: 60px;
   box-sizing: border-box;
-  line-height: 60px;
   text-align: center;
   color: #fff;
   font-size: 20px;
   letter-spacing: 0.2rem;
   font-weight: 700;
+  white-space: nowrap;
 }
 </style>

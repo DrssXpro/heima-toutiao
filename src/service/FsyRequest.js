@@ -30,8 +30,16 @@ class FsyRequest {
     return MyRequest.delete(url);
   }
 
-  put(url, data, config) {
-    return MyRequest.put(url, data, config);
+  put(url, collect) {
+    return MyRequest.put(url, { collect });
+  }
+
+  postImage(data) {
+    return MyRequest({
+      method: "POST",
+      url: "/mp/v1_0/user/images",
+      data,
+    });
   }
 }
 

@@ -13,6 +13,7 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
 export default {
   props: {
     getChannel: {
@@ -30,6 +31,9 @@ export default {
       channelId: null,
     };
   },
+  computed: {
+    ...mapState("m_article", ["channelStatus"]),
+  },
   created() {
     /**
      * actions由于异步因此不能直接设置channels值
@@ -44,6 +48,9 @@ export default {
     channelId(newValue) {
       this.$emit("channelChanged", newValue);
     },
+    channelStatus(newValue){
+      this.channelId = newValue
+    }
   },
 };
 </script>

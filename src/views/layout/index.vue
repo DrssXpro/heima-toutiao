@@ -2,7 +2,11 @@
   <div>
     <el-container class="layout_container">
       <el-aside width="auto" class="aside">
-        <nav-bar :class="nav_bar_style" :isCollapse="isCollapse" />
+        <nav-bar
+          :class="nav_bar_style"
+          :isCollapse="isCollapse"
+          :title="title"
+        />
       </el-aside>
       <el-container>
         <el-header class="nav-header">
@@ -32,14 +36,17 @@ export default {
     return {
       isCollapse: false,
       nav_bar_style: "nav-bar",
+      title: "头条内容管理系统",
     };
   },
   methods: {
     changeNavState(data) {
       if (data) {
         this.nav_bar_style = "nav-bar-change";
+        this.title = "";
       } else {
         this.nav_bar_style = "nav-bar";
+        this.title = "头条内容管理系统";
       }
       console.log(this.$refs.nav);
       this.isCollapse = data;
@@ -63,7 +70,7 @@ export default {
   transition: all 0.5s;
 }
 .nav-bar-change {
-  width: 70px;
+  width: 65px;
   height: 100%;
   background-color: rgb(48, 65, 86);
   transition: all 0.5s;
@@ -85,5 +92,6 @@ export default {
 }
 .slide-left-leave-active {
   transition: all 0.5s ease;
+  transform: translateX(20px);
 }
 </style>

@@ -1,4 +1,3 @@
-import { articleTableRequest } from "../service/article_request";
 export default {
   namespaced: true,
 
