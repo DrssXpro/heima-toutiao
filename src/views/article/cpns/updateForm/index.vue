@@ -15,6 +15,7 @@
           :extensions="extensions"
           height="350"
           placeholder="请输入文章内容"
+          lang="zh"
         ></el-tiptap>
       </el-form-item>
       <el-form-item label="封面:">
@@ -52,10 +53,6 @@ import {
   ListItem,
   BulletList,
   OrderedList,
-  TodoItem,
-  TodoList,
-  HorizontalRule,
-  Fullscreen,
   Image,
 } from "element-tiptap";
 import { editArticleRequest } from "../../../../service/article_request";
@@ -104,13 +101,9 @@ export default {
             });
           },
         }),
-        new HorizontalRule(),
         new ListItem(),
         new BulletList(),
         new OrderedList(),
-        new TodoItem(),
-        new TodoList(),
-        new Fullscreen(),
       ],
       formRules,
     };
