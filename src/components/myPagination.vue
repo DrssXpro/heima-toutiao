@@ -25,6 +25,10 @@ export default {
     isCollect: {
       type: Boolean,
     },
+    isShow: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
@@ -34,7 +38,9 @@ export default {
     };
   },
   created() {
-    this.pageSize = this.DataType === "article" ? 10 : 12;
+    //设置特定的pageSize table数据：10 素材展示：12 素材库：8
+    this.pageSize = this.DataType === "images" ? 12 : 10;
+    this.pageSize = this.pageSize === 12 && this.isShow ? 8 : 12;
   },
   methods: {
     onCurrentChange(currentPage) {
@@ -53,14 +59,23 @@ export default {
       if (this.DataType === "images") {
         this.$store.commit("m_article/setImageCurrentPage", currentPage);
         let collect = this.isCollect;
-        let page = currentPage
+        let page = currentPage;
+        let per_page = this.isShow ? 8 : 12;
         const payload = {
           collect,
           page,
+          per_page,
         };
         this.$store.dispatch("m_article/getImages", payload).then(() => {
           this.loading = false;
           this.$emit("getPageImages");
+        });
+      }
+      if (this.DataType === "comments") {
+        this.$store.commit("m_comment/setCurrentPage", currentPage);
+        this.$store.dispatch("m_comment/getComments", currentPage).then(() => {
+          this.loading = false;
+          this.$emit("getComments");
         });
       }
     },

@@ -12,5 +12,5 @@ export function deleteImage(id) {
 
 //收藏指定图片素材
 export function collectImage(id, isCollect) {
-  return FsyRequest.put(`/mp/v1_0/user/images/${id}`,isCollect);
+  return FsyRequest.put_changeCollect(`/mp/v1_0/user/images/${id}`,isCollect);
 }

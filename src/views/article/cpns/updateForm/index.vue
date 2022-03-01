@@ -22,6 +22,7 @@
           :labels="labels"
           :items="radioItems"
           @radioStatusChange="handleRadioChanged"
+          :isHasCover="true"
         />
       </el-form-item>
       <el-form-item label="频道" prop="channel_id">
@@ -66,7 +67,7 @@ export default {
   },
   props: {
     contentId: {
-      type: Number,
+      type: String,
     },
   },
   data() {
@@ -129,6 +130,7 @@ export default {
   },
   methods: {
     handleRadioChanged(status) {
+      this.article.cover.type = status;
       console.log(status);
     },
     sendCancel() {

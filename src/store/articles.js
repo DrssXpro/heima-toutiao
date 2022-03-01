@@ -3,15 +3,16 @@ import { getImages } from "../service/image_request";
 export default {
   namespaced: true,
   state: {
-    Articles: [], //获取table内容
-    Images: [],
-    imageCounter: 0,
-    imageCurrentPage: 1,
-    ArticleCounter: 0,
-    ArticlecurrentPage: 1,
-    dateTime: [],
-    radioStatus: null,
-    channelStatus: null,
+    Articles: [], //获取的table内容
+    Images: [], //获取的图片素材内容
+    imageCounter: 0, //素材总数量
+    imageCurrentPage: 1, //图片分页当前位置
+    imageCoverURL: [], //封面上传在线URL
+    ArticleCounter: 0, //文章总数量
+    ArticlecurrentPage: 1, //文章分页当前位置
+    dateTime: [], //时间组件值
+    radioStatus: null, //my-radio组件选中状态
+    channelStatus: null, //my-channel组件选中状态
   },
   mutations: {
     setDateTime(state, value) {
@@ -41,6 +42,9 @@ export default {
     setChannelStatus(state, value) {
       state.channelStatus = value;
     },
+    setImageCoverURL(state, value) {
+      state.imageCoverURL = value;
+    },
   },
   actions: {
     getTableArticles({ state, commit }, page = 1) {
@@ -65,7 +69,6 @@ export default {
       return new Promise((resolve, reject) => {
         getImages({
           ...payload,
-          per_page: 12,
         })
           .then((res) => {
             commit("getImageData", res.data.data.results);

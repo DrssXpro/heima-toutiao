@@ -15,11 +15,14 @@ export function articleDeleteRequest(id) {
 //文章发布：发表文章
 export function articlePublishRequest(data, draft = false) {
   //draft:是否存为草稿
+  console.log(draft);
   return FsyRequest.post("/mp/v1_0/articles", data, { params: { draft } });
 }
 //修改文章：文章编辑
 export function editArticleRequest(id, data, draft = false) {
-  return FsyRequest.put(`/mp/v1_0/articles/${id}`, data, { params: { draft } });
+  return FsyRequest.put_editArticle(`/mp/v1_0/articles/${id}`, data, {
+    params: { draft },
+  });
 }
 //获取文章
 export function getArticleContent(id) {
@@ -29,4 +32,12 @@ export function getArticleContent(id) {
 //向服务器上传图片
 export function uploadImage(data) {
   return FsyRequest.postImage(data);
+}
+
+//修改评论状态
+export function changeCommentStatus(id, currentStatus) {
+  return FsyRequest.put_changeCommentStatus(
+    `/mp/v1_0/comments/status?article_id=${id}`,
+    currentStatus
+  );
 }

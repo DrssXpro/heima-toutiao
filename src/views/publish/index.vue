@@ -23,11 +23,16 @@
             ></el-tiptap>
           </el-form-item>
           <el-form-item label="封面:">
-            <my-radio :labels="labels" :items="radioItems" />
+            <my-radio
+              :labels="labels"
+              :items="radioItems"
+              :isHasCover="true"
+              @radioStatusChange="handleRadioChanged"
+            />
           </el-form-item>
           <el-form-item label="频道" prop="channel_id">
             <my-channels
-              :getChannel="channelID"
+              :getChannel="article.channel_id"
               @channelChanged="handleChannelChanged"
               :isAll="false"
             />
@@ -35,7 +40,7 @@
 
           <el-form-item>
             <el-button type="primary" @click="publichArticle">发表</el-button>
-            <el-button>存入草稿</el-button>
+            <el-button @click="publishDraft">存入草稿</el-button>
           </el-form-item>
         </el-form>
       </div>
@@ -87,11 +92,10 @@ export default {
           type: -1,
           images: [],
         },
+        channel_id: null,
       },
       labels: [1, 3, 0, -1],
       radioItems: ["单图", "三图", "无图", "自动"],
-      status: 1,
-      channelID: null,
       extensions: [
         new Doc(),
         new Text(),
@@ -124,15 +128,23 @@ export default {
     };
   },
   methods: {
+    //发布文章
     publichArticle() {
+      this.HandlePublishArticle();
+    },
+    //发布草稿
+    publishDraft() {
+      this.HandlePublishArticle(true);
+    },
+    //文章发布处理
+    HandlePublishArticle(draft = false) {
       this.$refs["article-form"].validate((valid) => {
         if (!valid) return;
-
-        const channel_id = this.channelID;
+        this.article.cover.images = this.$store.state.m_article.imageCoverURL;
         const Ac = this.article;
-        const data = { ...Ac, channel_id };
-        console.log(data);
-        articlePublishRequest(data)
+        console.log(Ac);
+        const data = { ...Ac };
+        articlePublishRequest(data, draft)
           .then((res) => {
             this.$message({
               type: "success",
@@ -151,8 +163,12 @@ export default {
           });
       });
     },
+    //监听channel组件和radio选中内容，作为发布内容的参数
     handleChannelChanged(value) {
-      this.channelID = value;
+      this.article.channel_id = value;
+    },
+    handleRadioChanged(value) {
+      this.article.cover.type = value;
     },
   },
 };

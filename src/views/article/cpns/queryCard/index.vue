@@ -1,7 +1,7 @@
 <template>
   <div class="query">
     <el-card class="filter-card">
-      <div slot="header" class="clearfix">
+      <div slot="header">
         <bread-crumb title="内容管理" />
       </div>
       <div class="text item">
@@ -11,6 +11,7 @@
               :labels="labels"
               :items="radioItems"
               @radioStatusChange="handleRadioChanged"
+              :isHasCover="false"
             />
           </el-form-item>
           <el-form-item label="频道:">

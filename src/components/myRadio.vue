@@ -8,12 +8,25 @@
         >{{ item }}</el-radio
       >
     </el-radio-group>
+    <template v-if="isHasCover && status != -1">
+      <div class="uploadBox">
+        <upload-cover
+          v-for="(item, index) in status"
+          :key="index"
+          @onlineImgURL="handleOnlineURL(index, $event)"
+        />
+      </div>
+    </template>
   </div>
 </template>
 
 <script>
 import { mapState } from "vuex";
+import uploadCover from "./uploadCover.vue";
 export default {
+  components: {
+    uploadCover,
+  },
   props: {
     items: {
       type: Array,
@@ -23,10 +36,15 @@ export default {
       type: Array,
       required: true,
     },
+    isHasCover: {
+      type: Boolean,
+      required: true,
+    },
   },
   data() {
     return {
       status: "",
+      imagesURL: [],
     };
   },
   computed: {
@@ -43,7 +61,18 @@ export default {
   created() {
     this.status = this.labels[0];
   },
+  methods: {
+    handleOnlineURL(index, URL) {
+      console.log(index, URL);
+      this.imagesURL[index] = URL;
+      this.$store.commit("m_article/setImageCoverURL", this.imagesURL);
+    },
+  },
 };
 </script>
 
-<style></style>
+<style lang="less">
+.uploadBox {
+  display: flex;
+}
+</style>

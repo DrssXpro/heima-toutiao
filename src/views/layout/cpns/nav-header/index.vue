@@ -27,6 +27,7 @@
 <script>
 import { PersonInfoRequest } from "../../../../service/user_request";
 import Cache from "../../../../utils/cache";
+import globalBus from "../../../../utils/global-bus";
 export default {
   data() {
     return {
@@ -38,6 +39,11 @@ export default {
   },
   created() {
     this.getUserInfo();
+
+    globalBus.$on("updateProfile", (data) => {
+      this.name = data.name;
+      this.squareUrl = data.photo;
+    });
   },
   methods: {
     //获取用户信息：头像和名称
@@ -51,11 +57,7 @@ export default {
     handleCommand(Command) {
       if (Command === "person") {
         //查看个人中心
-        this.$message({
-          message: "该功能还未开发!",
-          type: "warning",
-          center: true,
-        });
+        this.$router.push("/personal");
         return;
       } else if (Command === "exit") {
         //退出登录功能，先将本地缓存token移除
@@ -75,7 +77,7 @@ export default {
         this.navStyle = "el-icon-s-unfold icon-size";
       } else {
         this.navStyle = "el-icon-s-fold icon-size";
-      }  
+      }
       this.isCollapse = !this.isCollapse;
       this.$emit("changeNav", this.isCollapse);
     },

@@ -2,7 +2,9 @@ import Vue from "vue";
 import Vuex from "vuex";
 import { articleChannelRequest } from "../service/article_request";
 import articles from "./articles";
+import comments from "./comments";
 import editArticle from "./editArticle";
+import fans from "./fans";
 Vue.use(Vuex);
 
 export default new Vuex.Store({
@@ -24,5 +26,10 @@ export default new Vuex.Store({
       });
     },
   },
-  modules: { m_article: articles, m_editArticle: editArticle },
+  modules: {
+    m_article: articles,
+    m_editArticle: editArticle,
+    m_comment: comments,
+    m_fan: fans,
+  },
 });

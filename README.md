@@ -81,3 +81,57 @@ axios.post(url,data,config)
 8. 富文本编辑器tiptap使用报错：Duplicate use of selection JSON ID cell
 
 解决方案：在项目目录下找打 node_modules/tiptap-extensions/node-modules，把最后的 node-modules 目录名字修改为 node-modules–
+
+
+
+9. 关于头像上传步骤：
+
+> 1. 使用input组件，将type设置为file，即可实现文件上传
+>
+> 2. 将input隐藏hidden，绑定ref，方便点击头像组件调用
+> 3. 头像点击@click="$refs.file.click()"来触发input选择文件
+> 4. input绑定change事件
+
+```javascript
+onFileChange() {
+    //用于生成文件url，绑定到img元素上
+    const file = this.$refs.file;
+    const blobData = window.URL.createObjectURL(file.files[0]);
+    this.previewImage = blobData;
+    this.dialogVisible = true;
+    //解决选择相同文件不触发该函数问题
+    this.$refs.file.value = "";
+},
+```
+
+
+
+10. 关于素材管理和发布文章时选择封面图片冲突问题：这个问题是我偶然发现的，在完成选择封面图片功能后再看素材管理的页面发现样式错乱了，先过了一遍素材管理页面的代码，自己也没有动过，果断F12看样式问题，才发现是因为选择封面时因为有了相同的类名都包裹着el-row，应该是出现了样式传递这样的错误。
+
+    解决方案：给style标签添加scoped
+
+    ```css
+    <style lang="less" scoped> 
+    .imageBox {
+      width: 100px;
+      height: 100px;
+      margin-top: 20px;
+      cursor: pointer;
+      overflow: hidden;
+    
+      .cover {
+        width: 100px;
+        height: 100px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: rgba(0, 0, 0, 0.4);
+      }
+      .coverActive {
+        transform: translateY(-105px);
+      }
+    }
+    </style>
+    ```
+
+    

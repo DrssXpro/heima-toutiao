@@ -135,7 +135,7 @@ export default {
     //处理删除按钮
     handleDelete(row) {
       this.loading = true;
-      articleDeleteRequest(row.id)
+      articleDeleteRequest(row.id.toString())
         .then(() => {
           this.$message({
             type: "success",
@@ -149,8 +149,8 @@ export default {
     },
     //处理编辑按钮
     handleEditClick(row) {
-      this.articleId = row.id;
-      getArticleContent(row.id).then((res) => {
+      this.articleId = row.id.toString();
+      getArticleContent(row.id.toString()).then((res) => {
         this.$store.commit("m_editArticle/setArticle", res.data.data);
       });
       this.dialogFormVisible = true;

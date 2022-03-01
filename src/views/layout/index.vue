@@ -79,7 +79,7 @@ export default {
   border-bottom: 1px solid rgb(199, 198, 198);
 }
 .main {
-  background-color: #fff;
+  background-color: rgb(232, 238, 244);
 }
 .slide-left-enter {
   opacity: 0;

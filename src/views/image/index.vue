@@ -23,7 +23,7 @@
       </div>
 
       <!-- 图片列表 -->
-      <div class="imageBox" v-loading="imagesLoading">
+      <div v-loading="imagesLoading">
         <el-row :gutter="10">
           <el-col
             v-for="(item, index) in images"
@@ -111,6 +111,7 @@
           </div>
         </el-upload>
       </el-dialog>
+      <!-- 分页处理 -->
       <my-pagination
         :counter="Counter"
         DataType="images"
@@ -160,11 +161,12 @@ export default {
   },
   methods: {
     //请求图片素材
-    async loadImages(collect = false, page = 1) {
+    async loadImages(collect = false, page = 1, per_page = 12) {
       this.imagesLoading = true;
       const res = await this.$store.dispatch("m_article/getImages", {
         collect,
         page,
+        per_page,
       });
       this.Counter = res;
       this.images = this.Images;
