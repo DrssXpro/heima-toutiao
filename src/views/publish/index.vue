@@ -108,7 +108,7 @@ export default {
             const fd = new FormData();
             fd.append("image", file);
             return uploadImage(fd).then((res) => {
-              console.log(res);
+
               return res.data.data.url;
             });
           },
